@@ -8,13 +8,15 @@
     </header>
 
     <main class="page-content">
+      <TaskStatusChart />
       <ProjectsTable />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import ProjectsTable from '@/components/projects/ProjectsTable.vue'
+import ProjectsTable   from '@/components/projects/ProjectsTable.vue'
+import TaskStatusChart from '@/components/projects/TaskStatusChart.vue'
 </script>
 
 <style scoped lang="scss">
@@ -44,6 +46,8 @@ import ProjectsTable from '@/components/projects/ProjectsTable.vue'
 }
 
 .page-content {
+  @include flex-column;
+  gap: $spacing-4;
   padding: $spacing-6 $spacing-8;
   flex: 1;
 }
