@@ -1,0 +1,178 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "E-Commerce Platform",
+      "description": "Full redesign and rebuild of the company's online store with new checkout flow and mobile-first approach.",
+      "status": "active",
+      "taskCount": 4,
+      "createdAt": "2026-01-10T09:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Internal CRM System",
+      "description": "Custom CRM for the sales team to track leads, clients and deals. Integrates with existing ERP.",
+      "status": "active",
+      "taskCount": 4,
+      "createdAt": "2026-01-22T11:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Mobile App v2.0",
+      "description": "Major update to the iOS/Android app. New UI, push notifications, offline mode.",
+      "status": "completed",
+      "taskCount": 3,
+      "createdAt": "2025-11-05T08:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Data Analytics Dashboard",
+      "description": "Executive-facing BI dashboard with real-time KPIs, charts and exportable reports.",
+      "status": "on-hold",
+      "taskCount": 3,
+      "createdAt": "2026-02-14T14:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "projectId": 1,
+      "title": "Design new checkout UI",
+      "assignee": "Alice Johnson",
+      "status": "done",
+      "dueDate": "2026-02-15",
+      "order": 1,
+      "createdAt": "2026-01-11T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "projectId": 1,
+      "title": "Implement product search with filters",
+      "assignee": "Bob Smith",
+      "status": "in-progress",
+      "dueDate": "2026-03-30",
+      "order": 2,
+      "createdAt": "2026-01-12T09:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "projectId": 1,
+      "title": "Integrate Stripe payment gateway",
+      "assignee": "Carol Williams",
+      "status": "in-progress",
+      "dueDate": "2026-04-10",
+      "order": 3,
+      "createdAt": "2026-01-15T11:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "projectId": 1,
+      "title": "Write E2E tests for checkout flow",
+      "assignee": null,
+      "status": "todo",
+      "dueDate": "2026-04-25",
+      "order": 4,
+      "createdAt": "2026-01-20T14:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "projectId": 2,
+      "title": "Create lead management module",
+      "assignee": "David Brown",
+      "status": "done",
+      "dueDate": "2026-02-20",
+      "order": 1,
+      "createdAt": "2026-01-23T09:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "projectId": 2,
+      "title": "Build deal pipeline Kanban view",
+      "assignee": "Eva Martinez",
+      "status": "in-progress",
+      "dueDate": "2026-04-05",
+      "order": 2,
+      "createdAt": "2026-01-25T10:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "projectId": 2,
+      "title": "ERP integration via REST API",
+      "assignee": "Alice Johnson",
+      "status": "todo",
+      "dueDate": "2026-05-01",
+      "order": 3,
+      "createdAt": "2026-02-01T08:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "projectId": 2,
+      "title": "User roles and permissions setup",
+      "assignee": "Bob Smith",
+      "status": "todo",
+      "dueDate": "2026-05-15",
+      "order": 4,
+      "createdAt": "2026-02-03T12:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "projectId": 3,
+      "title": "Redesign onboarding screens",
+      "assignee": "Carol Williams",
+      "status": "done",
+      "dueDate": "2025-12-01",
+      "order": 1,
+      "createdAt": "2025-11-06T09:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "projectId": 3,
+      "title": "Implement push notifications",
+      "assignee": "David Brown",
+      "status": "done",
+      "dueDate": "2025-12-20",
+      "order": 2,
+      "createdAt": "2025-11-10T10:00:00.000Z"
+    },
+    {
+      "id": 11,
+      "projectId": 3,
+      "title": "Offline mode with local cache",
+      "assignee": "Eva Martinez",
+      "status": "done",
+      "dueDate": "2026-01-10",
+      "order": 3,
+      "createdAt": "2025-11-15T11:00:00.000Z"
+    },
+    {
+      "id": 12,
+      "projectId": 4,
+      "title": "Define KPI requirements with stakeholders",
+      "assignee": "Alice Johnson",
+      "status": "done",
+      "dueDate": "2026-03-01",
+      "order": 1,
+      "createdAt": "2026-02-15T09:00:00.000Z"
+    },
+    {
+      "id": 13,
+      "projectId": 4,
+      "title": "Design dashboard layout and charts",
+      "assignee": null,
+      "status": "in-progress",
+      "dueDate": "2026-05-20",
+      "order": 2,
+      "createdAt": "2026-02-18T10:00:00.000Z"
+    },
+    {
+      "id": 14,
+      "projectId": 4,
+      "title": "Connect live data sources via WebSocket",
+      "assignee": "Bob Smith",
+      "status": "todo",
+      "dueDate": "2026-06-15",
+      "order": 3,
+      "createdAt": "2026-02-20T14:00:00.000Z"
+    }
+  ]
+}
