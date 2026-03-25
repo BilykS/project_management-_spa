@@ -1,48 +1,18 @@
-// GRASP High Cohesion: весь UI-стан (viewMode, sort, filter, column widths)
-// в одному місці — не розкиданий по компонентах.
-// Protected Variations: компоненти читають ui-стан через store,
-// тому зміна структури стану торкнеться тільки цього файлу.
-// SRP: тільки UI preferences — жодних API-викликів.
-
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type {
-  SortState,
-  ProjectsFilterState,
-  TasksFilterState,
-} from '@/types/models'
+import type { SortState, ProjectsFilterState, TasksFilterState } from '@/types/models'
 
 export const useUiStore = defineStore(
   'ui',
   () => {
-    // ─── View mode ──────────────────────────────────────────────────────────
-    // Зберігається між перезавантаженнями (spec requirement)
     const viewMode = ref<'table' | 'kanban'>('table')
 
-    // ─── Projects table state ────────────────────────────────────────────────
-    const projectsSort = ref<SortState>({
-      key: 'id',
-      direction: 'asc',
-    })
+    const projectsSort   = ref<SortState>({ key: 'id', direction: 'asc' })
+    const projectsFilter = ref<ProjectsFilterState>({ name: '', status: '' })
 
-    const projectsFilter = ref<ProjectsFilterState>({
-      name: '',
-      status: '',
-    })
+    const tasksSort   = ref<SortState>({ key: 'order', direction: 'asc' })
+    const tasksFilter = ref<TasksFilterState>({ assignee: '', status: '' })
 
-    // ─── Tasks table state ───────────────────────────────────────────────────
-    const tasksSort = ref<SortState>({
-      key: 'order',
-      direction: 'asc',
-    })
-
-    const tasksFilter = ref<TasksFilterState>({
-      assignee: '',
-      status: '',
-    })
-
-    // ─── Column widths ────────────────────────────────────────────────────────
-    // DRY: зберігаються один раз тут, зчитуються директивою vResizeColumn
     const projectColumnWidths = ref<Record<string, number>>({
       id:        60,
       name:      220,
@@ -52,16 +22,14 @@ export const useUiStore = defineStore(
     })
 
     const taskColumnWidths = ref<Record<string, number>>({
-      drag:      40,
-      id:        60,
-      title:     240,
-      assignee:  160,
-      status:    130,
-      dueDate:   140,
-      actions:   90,
+      drag:     40,
+      id:       60,
+      title:    240,
+      assignee: 160,
+      status:   130,
+      dueDate:  140,
+      actions:  90,
     })
-
-    // ─── Actions ─────────────────────────────────────────────────────────────
 
     function setViewMode(mode: 'table' | 'kanban'): void {
       viewMode.value = mode
@@ -101,9 +69,7 @@ export const useUiStore = defineStore(
       taskColumnWidths.value[col] = width
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
     return {
-      // state
       viewMode,
       projectsSort,
       projectsFilter,
@@ -111,7 +77,6 @@ export const useUiStore = defineStore(
       tasksFilter,
       projectColumnWidths,
       taskColumnWidths,
-      // actions
       setViewMode,
       setProjectsSort,
       setTasksSort,
@@ -121,8 +86,5 @@ export const useUiStore = defineStore(
       setTaskColumnWidth,
     }
   },
-  {
-    // Persist все — viewMode, sort, filter, column widths (spec requirement)
-    persist: true,
-  },
+  { persist: true },
 )

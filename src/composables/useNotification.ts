@@ -1,9 +1,3 @@
-// GRASP Pure Fabrication: обгортка над vue-toastification.
-// GRASP Protected Variations: компоненти і stores залежать від цього
-// інтерфейсу, а не від vue-toastification напряму — зміна бібліотеки
-// торкнеться тільки цього файлу.
-// ISP: вузький інтерфейс — тільки сповіщення.
-
 import { useToast } from 'vue-toastification'
 
 export function useNotification() {

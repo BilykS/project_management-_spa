@@ -11,10 +11,6 @@
 </template>
 
 <script setup lang="ts">
-// Open/Closed: новий variant — тільки новий CSS клас, компонент не змінюється.
-// LSP: всі варіанти кнопки поводяться однаково (disabled, loading, slot).
-// SRP: тільки кнопка з варіантами.
-
 import AppSpinner from './AppSpinner.vue'
 
 defineProps<{
@@ -48,7 +44,7 @@ defineOptions({ inheritAttrs: true })
     pointer-events: none;
   }
 
-  // ─── Variants ─────────────────────────────────────────────────────────
+  // Variants
   &--primary {
     background: $color-primary;
     color: $color-text-inverse;

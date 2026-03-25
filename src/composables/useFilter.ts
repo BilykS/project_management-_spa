@@ -1,34 +1,25 @@
-// GRASP Pure Fabrication: технічний composable без domain-логіки.
-// ISP: вузький інтерфейс — тільки фільтрація.
-// DRY: один composable для ProjectsTable і TasksTable.
-// Open/Closed: розширюється через `fields` конфіг без зміни composable.
-
 import { computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 
-// Опис того як фільтрувати кожне поле:
-// 'text'  — часткове входження, без урахування регістру
-// 'exact' — точний збіг (використовується для статусів)
-type FieldMode = 'text' | 'exact'
+// Accepts both Ref and ComputedRef (both have .value)
+type ReadonlyRef<T> = Ref<T> | ComputedRef<T> | { readonly value: T }
 
+type FieldMode = 'text' | 'exact'
 type FilterFields<T> = Partial<Record<keyof T, FieldMode>>
 
 export function useFilter<T extends Record<string, unknown>>(
-  items: Ref<T[]> | ComputedRef<T[]>,
-  filters: Ref<Partial<Record<keyof T, string>>>,
+  items: ReadonlyRef<T[]>,
+  filters: ReadonlyRef<Record<string, string>>,
   fields: FilterFields<T>,
 ) {
   const filtered = computed<T[]>(() =>
     items.value.filter((item) =>
       (Object.entries(fields) as [keyof T, FieldMode][]).every(
         ([field, mode]) => {
-          const filterVal = filters.value[field]
-
-          // Порожній фільтр = показати все
+          const filterVal = filters.value[field as string]
           if (!filterVal) return true
 
           const itemVal = String(item[field] ?? '')
-
           return mode === 'text'
             ? itemVal.toLowerCase().includes(filterVal.toLowerCase())
             : itemVal === filterVal

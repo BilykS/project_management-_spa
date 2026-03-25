@@ -1,6 +1,3 @@
-// SRP: цей модуль відповідає тільки за створення та конфігурацію HTTP-клієнта.
-// DIP: всі API модулі залежать від цього клієнта, а не від axios напряму.
-
 import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
@@ -8,8 +5,6 @@ import axios, {
   type AxiosError,
 } from 'axios'
 import { useToast } from 'vue-toastification'
-
-// ─── Створення інстансу ───────────────────────────────────────────────────────
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -19,9 +14,7 @@ const apiClient: AxiosInstance = axios.create({
   },
 })
 
-// ─── Request interceptor ──────────────────────────────────────────────────────
-// KISS: тільки dev-логування — нічого зайвого
-
+// Request interceptor — dev logging
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (import.meta.env.DEV) {
@@ -32,9 +25,7 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 )
 
-// ─── Response interceptor ─────────────────────────────────────────────────────
-// SRP: глобальна обробка HTTP-помилок живе тут, а не розкидана по stores
-
+// Response interceptor — global error toast
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     if (import.meta.env.DEV) {
@@ -43,8 +34,7 @@ apiClient.interceptors.response.use(
     return response
   },
   (error: AxiosError<{ message?: string }>) => {
-    // useToast() викликається всередині interceptor — це безпечно
-    // оскільки Vue app вже змонтована на момент першого запиту
+    // useToast() is safe here — app is already mounted on first request
     const toast = useToast()
 
     const status = error.response?.status

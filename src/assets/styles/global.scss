@@ -1,4 +1,4 @@
-// ─── Reset ────────────────────────────────────────────────────────────────────
+// Reset
 *,
 *::before,
 *::after {
@@ -7,7 +7,7 @@
   padding: 0;
 }
 
-// ─── Base ─────────────────────────────────────────────────────────────────────
+// Base
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
@@ -29,7 +29,7 @@ body {
   @include flex-column;
 }
 
-// ─── Typography ───────────────────────────────────────────────────────────────
+// Typography
 h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
@@ -46,7 +46,7 @@ a {
   }
 }
 
-// ─── Form elements ────────────────────────────────────────────────────────────
+// Form elements
 input,
 textarea,
 select {
@@ -58,12 +58,12 @@ button {
   @include button-reset;
 }
 
-// ─── Scrollbar ────────────────────────────────────────────────────────────────
+// Scrollbar
 html {
   @include custom-scrollbar(8px);
 }
 
-// ─── Utilities ────────────────────────────────────────────────────────────────
+// Utilities
 .sr-only {
   position: absolute;
   width: 1px;
@@ -80,7 +80,7 @@ html {
   @include text-truncate;
 }
 
-// ─── Vue transitions ──────────────────────────────────────────────────────────
+// Vue transitions
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity $transition-base;

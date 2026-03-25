@@ -1,6 +1,6 @@
 @use 'variables' as *;
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
+// Layout
 @mixin flex-center {
   display: flex;
   align-items: center;
@@ -24,7 +24,7 @@
   flex-direction: column;
 }
 
-// ─── Typography ───────────────────────────────────────────────────────────────
+// Typography
 @mixin text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,7 +38,7 @@
   overflow: hidden;
 }
 
-// ─── Interactive ──────────────────────────────────────────────────────────────
+// Interactive
 @mixin focus-ring {
   outline: 2px solid $color-primary;
   outline-offset: 2px;
@@ -61,7 +61,7 @@
   }
 }
 
-// ─── Responsive ───────────────────────────────────────────────────────────────
+// Responsive
 @mixin responsive($bp) {
   @if $bp == 'sm' {
     @media (max-width: 640px)  { @content; }
@@ -74,7 +74,7 @@
   }
 }
 
-// ─── Scrollbar ────────────────────────────────────────────────────────────────
+// Scrollbar
 @mixin custom-scrollbar($size: 6px) {
   scrollbar-width: thin;
   scrollbar-color: $color-border-dark transparent;
@@ -98,7 +98,7 @@
   }
 }
 
-// ─── Card ─────────────────────────────────────────────────────────────────────
+// Card
 @mixin card {
   background: $color-bg-primary;
   border: 1px solid $color-border;

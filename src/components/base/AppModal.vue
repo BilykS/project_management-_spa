@@ -39,26 +39,20 @@
 </template>
 
 <script setup lang="ts">
-// Open/Closed: розширюється через slots (body + footer) без зміни компонента.
-// SRP: тільки відображення модального вікна і керування його станом.
-
 import { computed, onMounted, onUnmounted } from 'vue'
 
-// ─── Props / Emits ──────────────────────────────────────────────────────────
 const props = defineProps<{
   modelValue: boolean
   title: string
-  persistent?: boolean   // true — не закривати по кліку на overlay
+  persistent?: boolean  // if true, clicking overlay does not close
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
 
-// ─── Computed ───────────────────────────────────────────────────────────────
 const titleId = computed(() => `modal-title-${Math.random().toString(36).slice(2, 7)}`)
 
-// ─── Methods ────────────────────────────────────────────────────────────────
 function close(): void {
   emit('update:modelValue', false)
 }
@@ -67,7 +61,6 @@ function onOverlayClick(): void {
   if (!props.persistent) close()
 }
 
-// ─── Lifecycle ──────────────────────────────────────────────────────────────
 function onKeydown(e: KeyboardEvent): void {
   if (e.key === 'Escape' && props.modelValue && !props.persistent) close()
 }
@@ -140,7 +133,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
   }
 }
 
-// ─── Transition ─────────────────────────────────────────────────────────────
+// Transition
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity $transition-base;

@@ -1,10 +1,5 @@
-// ─── Enums / Union types ──────────────────────────────────────────────────────
-
 export type ProjectStatus = 'active' | 'completed' | 'on-hold'
-
 export type TaskStatus = 'todo' | 'in-progress' | 'done'
-
-// ─── Core models ──────────────────────────────────────────────────────────────
 
 export interface Project {
   id: number
@@ -18,11 +13,11 @@ export interface Project {
 export interface Task {
   id: number
   projectId: number
-  title: string       // 3–120 символів
+  title: string           // 3–120 chars
   assignee: string | null
   status: TaskStatus
   dueDate: string | null  // YYYY-MM-DD
-  order: number           // для drag-and-drop сортування
+  order: number           // drag-and-drop position
   createdAt: string       // ISO 8601
 }
 
@@ -31,20 +26,14 @@ export interface Assignee {
   name: string
 }
 
-// ─── DTOs ─────────────────────────────────────────────────────────────────────
-
-// Project
+// DTOs
 export type CreateProjectDto = Pick<Project, 'name' | 'description'>
-
 export type UpdateProjectDto = Partial<Omit<Project, 'id' | 'createdAt'>>
 
-// Task
 export type CreateTaskDto = Omit<Task, 'id' | 'order' | 'createdAt'>
-
 export type UpdateTaskDto = Partial<Omit<Task, 'id' | 'projectId' | 'createdAt'>>
 
-// ─── UI helpers ───────────────────────────────────────────────────────────────
-
+// UI state
 export type SortDirection = 'asc' | 'desc'
 
 export interface SortState {
@@ -62,8 +51,7 @@ export interface TasksFilterState {
   status: TaskStatus | ''
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
+// Constants
 export const PROJECT_STATUSES: { value: ProjectStatus; label: string }[] = [
   { value: 'active',    label: 'Active'    },
   { value: 'completed', label: 'Completed' },

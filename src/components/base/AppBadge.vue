@@ -5,21 +5,14 @@
 </template>
 
 <script setup lang="ts">
-// GRASP Polymorphism: один компонент для ProjectStatus і TaskStatus.
-// DRY: кольори і label визначені тут один раз, не через v-if по всьому коду.
-// SRP: тільки відображення статусу.
-
 import { computed } from 'vue'
 import type { ProjectStatus, TaskStatus } from '@/types/models'
 import { PROJECT_STATUSES, TASK_STATUSES } from '@/types/models'
 
-// ─── Props ──────────────────────────────────────────────────────────────────
 const props = defineProps<{
   status: ProjectStatus | TaskStatus
 }>()
 
-// ─── Computed ───────────────────────────────────────────────────────────────
-// DRY: беремо label з єдиних констант визначених у models.ts
 const label = computed(() => {
   const all = [...PROJECT_STATUSES, ...TASK_STATUSES]
   return all.find((s) => s.value === props.status)?.label ?? props.status
@@ -37,7 +30,7 @@ const label = computed(() => {
   white-space: nowrap;
   line-height: $line-height-loose;
 
-  // ─── Project statuses ──────────────────────────────────────────────────
+  // Project statuses
   &--active {
     background: rgba($color-status-active, 0.12);
     color: $color-status-active;
@@ -53,7 +46,7 @@ const label = computed(() => {
     color: darken($color-status-on-hold, 20%);
   }
 
-  // ─── Task statuses ─────────────────────────────────────────────────────
+  // Task statuses
   &--todo {
     background: rgba($color-status-todo, 0.12);
     color: $color-status-todo;

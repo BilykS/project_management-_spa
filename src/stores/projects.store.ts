@@ -1,9 +1,3 @@
-// GRASP Information Expert: store знає всі проекти → він відповідає
-// за будь-яку логіку над ними.
-// GRASP Creator: store агрегує Project[] → він створює нові проекти.
-// GRASP Controller: посередник між UI і API — компонент лише викликає actions.
-// SRP: тільки стан проектів і CRUD-операції над ними.
-
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { projectsApi } from '@/api/projects.api'
@@ -12,41 +6,28 @@ import type { Project, CreateProjectDto, UpdateProjectDto } from '@/types/models
 export const useProjectsStore = defineStore(
   'projects',
   () => {
-    // ─── State ──────────────────────────────────────────────────────────────
     const projects = ref<Project[]>([])
     const loading  = ref(false)
     const error    = ref<string | null>(null)
 
-    // ─── Getters ────────────────────────────────────────────────────────────
-
-    // Information Expert: store знає проекти → він рахує статистику для chart
-    const taskStatsByStatus = computed(() => {
-      return projects.value.reduce(
+    // Task counts grouped by project status, used for chart
+    const taskStatsByStatus = computed(() =>
+      projects.value.reduce(
         (acc, project) => {
           acc[project.status] = (acc[project.status] ?? 0) + project.taskCount
           return acc
         },
         {} as Record<string, number>,
-      )
-    })
+      ),
+    )
 
     const totalTaskCount = computed(() =>
       projects.value.reduce((sum, p) => sum + p.taskCount, 0),
     )
 
-    // ─── Private helpers ────────────────────────────────────────────────────
+    function setLoading(value: boolean)     { loading.value = value }
+    function setError(msg: string | null)   { error.value   = msg   }
 
-    function setLoading(value: boolean) {
-      loading.value = value
-    }
-
-    function setError(message: string | null) {
-      error.value = message
-    }
-
-    // ─── Actions ────────────────────────────────────────────────────────────
-
-    // DIP: action викликає API модуль, не axios напряму
     async function fetchAll(): Promise<void> {
       setLoading(true)
       setError(null)
@@ -69,7 +50,6 @@ export const useProjectsStore = defineStore(
         createdAt: new Date().toISOString(),
       }
       const { data } = await projectsApi.create(payload)
-      // Optimistic: додаємо у локальний масив без refetch
       projects.value.push(data)
       return data
     }
@@ -85,12 +65,10 @@ export const useProjectsStore = defineStore(
     async function remove(id: number): Promise<void> {
       setError(null)
       await projectsApi.remove(id)
-      // Optimistic: видаляємо локально без refetch
       projects.value = projects.value.filter((p) => p.id !== id)
     }
 
-    // GRASP Indirection: tasks store викликає цей метод замість прямого
-    // патчингу projects — єдина точка зміни taskCount
+    // Called by tasks store to keep taskCount in sync
     function adjustTaskCount(projectId: number, delta: number): void {
       const project = projects.value.find((p) => p.id === projectId)
       if (project) {
@@ -98,16 +76,12 @@ export const useProjectsStore = defineStore(
       }
     }
 
-    // ────────────────────────────────────────────────────────────────────────
     return {
-      // state
       projects,
       loading,
       error,
-      // getters
       taskStatsByStatus,
       totalTaskCount,
-      // actions
       fetchAll,
       create,
       update,
@@ -115,8 +89,5 @@ export const useProjectsStore = defineStore(
       adjustTaskCount,
     }
   },
-  {
-    // Persist тільки projects — loading/error не зберігаємо
-    persist: { paths: ['projects'] },
-  },
+  { persist: { paths: ['projects'] } },
 )

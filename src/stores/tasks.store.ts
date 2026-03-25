@@ -1,10 +1,3 @@
-// GRASP Information Expert: store знає всі завдання → він відповідає
-// за групування і фільтрацію.
-// GRASP Creator: store агрегує Task[] → він створює нові завдання.
-// GRASP Low Coupling: TasksTable і TaskKanban незалежні — обидва
-// читають з одного store замість прямої залежності між собою.
-// SRP: тільки стан завдань і CRUD-операції над ними.
-
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { tasksApi } from '@/api/tasks.api'
@@ -14,15 +7,11 @@ import type { Task, CreateTaskDto, UpdateTaskDto, TaskStatus } from '@/types/mod
 export const useTasksStore = defineStore(
   'tasks',
   () => {
-    // ─── State ──────────────────────────────────────────────────────────────
     const tasks   = ref<Task[]>([])
     const loading = ref(false)
     const error   = ref<string | null>(null)
 
-    // ─── Getters ────────────────────────────────────────────────────────────
-
-    // Information Expert: store знає tasks → він відповідає за вибірку
-    // Повертає функцію — дозволяє реактивно отримати завдання по projectId
+    // Returns a function — allows reactive lookup by projectId
     const byProject = computed(() => {
       return (projectId: number): Task[] =>
         tasks.value
@@ -30,8 +19,7 @@ export const useTasksStore = defineStore(
           .sort((a, b) => a.order - b.order)
     })
 
-    // Для Kanban: повертає завдання проекту згруповані по статусу
-    // GRASP High Cohesion: вся логіка групування живе тут, не в компоненті
+    // Tasks for a project grouped by status, for Kanban view
     const byStatus = computed(() => {
       return (projectId: number): Record<TaskStatus, Task[]> => {
         const projectTasks = tasks.value
@@ -46,19 +34,14 @@ export const useTasksStore = defineStore(
       }
     })
 
-    // ─── Private helpers ────────────────────────────────────────────────────
-
-    function setLoading(value: boolean)      { loading.value = value }
-    function setError(msg: string | null)    { error.value   = msg   }
-
-    // ─── Actions ────────────────────────────────────────────────────────────
+    function setLoading(value: boolean)    { loading.value = value }
+    function setError(msg: string | null)  { error.value   = msg   }
 
     async function fetchByProject(projectId: number): Promise<void> {
       setLoading(true)
       setError(null)
       try {
         const { data } = await tasksApi.getByProject(projectId)
-        // Зберігаємо отримані завдання, попередньо прибравши старі для цього проекту
         tasks.value = [
           ...tasks.value.filter((t) => t.projectId !== projectId),
           ...data,
@@ -82,10 +65,8 @@ export const useTasksStore = defineStore(
       }
 
       const { data } = await tasksApi.create(payload)
-      // Optimistic: додаємо без refetch
       tasks.value.push(data)
 
-      // GRASP Indirection: оновлюємо taskCount через projects store
       const projectsStore = useProjectsStore()
       projectsStore.adjustTaskCount(dto.projectId, +1)
 
@@ -109,48 +90,37 @@ export const useTasksStore = defineStore(
       if (!task) return
 
       await tasksApi.remove(id)
-      // Optimistic: видаляємо без refetch
       tasks.value = tasks.value.filter((t) => t.id !== id)
 
-      // GRASP Indirection: зменшуємо taskCount через projects store
       const projectsStore = useProjectsStore()
       projectsStore.adjustTaskCount(task.projectId, -1)
     }
 
-    // Викликається після drag-and-drop в таблиці або Kanban.
-    // Отримує вже переставлений масив завдань конкретного проекту,
-    // перераховує order і персистує кожну змінену задачу через API.
+    // Receives reordered array, recalculates order and patches only changed tasks
     async function reorder(reorderedTasks: Task[]): Promise<void> {
       setError(null)
-      // Перераховуємо order на основі нових позицій
       const updated = reorderedTasks.map((task, index) => ({
         ...task,
         order: index + 1,
       }))
 
-      // Оновлюємо локальний стан одразу (optimistic)
       updated.forEach((updatedTask) => {
         const index = tasks.value.findIndex((t) => t.id === updatedTask.id)
         if (index !== -1) tasks.value[index] = updatedTask
       })
 
-      // Персистуємо тільки ті задачі, у яких order змінився
       const changed = updated.filter((t, i) => t.order !== reorderedTasks[i]?.order)
       await Promise.all(
         changed.map((t) => tasksApi.update(t.id, { order: t.order })),
       )
     }
 
-    // ────────────────────────────────────────────────────────────────────────
     return {
-      // state
       tasks,
       loading,
       error,
-      // getters
       byProject,
       byStatus,
-      // actions
       fetchByProject,
       create,
       update,
@@ -158,8 +128,5 @@ export const useTasksStore = defineStore(
       reorder,
     }
   },
-  {
-    // Persist тільки tasks — loading/error не зберігаємо
-    persist: { paths: ['tasks'] },
-  },
+  { persist: { paths: ['tasks'] } },
 )
