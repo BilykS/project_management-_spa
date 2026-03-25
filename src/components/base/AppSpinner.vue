@@ -8,8 +8,6 @@
 </template>
 
 <script setup lang="ts">
-// SRP: тільки анімований індикатор завантаження.
-
 defineProps<{
   size?: 'sm' | 'md' | 'lg'
 }>()
