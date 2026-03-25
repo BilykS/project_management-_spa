@@ -7,6 +7,7 @@ import 'vue-toastification/dist/index.css'
 import router from './router'
 import App from './App.vue'
 import './assets/styles/global.scss'
+import { vResizeColumn } from './directives/vResizeColumn'
 
 const toastOptions: PluginOptions = {
   position: POSITION.TOP_RIGHT,
@@ -27,5 +28,6 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(Toast, toastOptions)
+app.directive('resize-column', vResizeColumn)
 
 app.mount('#app')
