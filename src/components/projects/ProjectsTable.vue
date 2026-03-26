@@ -8,7 +8,7 @@
           :value="uiStore.projectsFilter.name"
           class="filter-input"
           type="search"
-          placeholder="Search by name…"
+          placeholder="Пошук за назвою"
           @input="uiStore.setProjectsFilter({ name: ($event.target as HTMLInputElement).value })"
         />
         <select
@@ -16,14 +16,14 @@
           class="filter-select"
           @change="uiStore.setProjectsFilter({ status: ($event.target as HTMLSelectElement).value as ProjectStatus | '' })"
         >
-          <option value="">All statuses</option>
+          <option value="">Всі статуси</option>
           <option v-for="s in PROJECT_STATUSES" :key="s.value" :value="s.value">
             {{ s.label }}
           </option>
         </select>
       </div>
       <AppButton variant="primary" @click="showModal = true">
-        + Add Project
+        + Додати проект
       </AppButton>
     </div>
 
@@ -34,7 +34,7 @@
 
     <!-- Empty -->
     <div v-else-if="displayedProjects.length === 0" class="state-box state-box--empty">
-      <p>{{ projectsStore.projects.length === 0 ? 'No projects yet. Create your first one!' : 'No projects match your filters.' }}</p>
+      <p>{{ projectsStore.projects.length === 0 ? 'Немає проектів. Створіть перший!' : 'Жоден проект не відповідає фільтрам.' }}</p>
     </div>
 
     <!-- Table -->
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Modal -->
-    <AppModal v-model="showModal" title="Add Project">
+    <AppModal v-model="showModal" title="Додати проект">
       <ProjectForm
         @saved="showModal = false"
         @cancel="showModal = false"
@@ -116,11 +116,11 @@ const resizable     = useResizableColumns('project')
 const showModal = ref(false)
 
 const columns = [
-  { key: 'id',        label: 'ID',           sortable: true  },
-  { key: 'name',      label: 'Project Name', sortable: true  },
-  { key: 'taskCount', label: 'Tasks',        sortable: true  },
-  { key: 'status',    label: 'Status',       sortable: true  },
-  { key: 'createdAt', label: 'Created',      sortable: false },
+  { key: 'id',        label: 'ID',                sortable: true  },
+  { key: 'name',      label: 'Назва проекту',     sortable: true  },
+  { key: 'taskCount', label: 'Кількість завдань', sortable: true  },
+  { key: 'status',    label: 'Статус',            sortable: true  },
+  { key: 'createdAt', label: 'Дата створення',    sortable: false },
 ]
 
 const projectsRef = computed(() => projectsStore.projects as Record<string, unknown>[])

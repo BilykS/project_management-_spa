@@ -59,7 +59,7 @@ export const PROJECT_STATUSES: { value: ProjectStatus; label: string }[] = [
 ]
 
 export const TASK_STATUSES: { value: TaskStatus; label: string }[] = [
-  { value: 'todo',        label: 'To Do'       },
+   { value: 'todo',        label: 'To Do'       },
   { value: 'in-progress', label: 'In Progress' },
   { value: 'done',        label: 'Done'        },
 ]

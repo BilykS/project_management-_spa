@@ -2,8 +2,8 @@
   <div class="projects-view">
     <header class="page-header">
       <div>
-        <h1 class="page-header__title">Projects</h1>
-        <p class="page-header__subtitle">Manage your projects and track progress</p>
+        <h1 class="page-header__title">Проекти</h1>
+        <p class="page-header__subtitle">Керуйте проектами та відстежуйте прогрес</p>
       </div>
     </header>
 

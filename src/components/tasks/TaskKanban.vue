@@ -3,7 +3,7 @@
 
     <!-- Header -->
     <div class="kanban-header">
-      <AppButton variant="primary" @click="openCreate">+ Add Task</AppButton>
+      <AppButton variant="primary" @click="openCreate">+ Додати завдання</AppButton>
     </div>
 
     <!-- Loading -->
@@ -34,7 +34,7 @@
     </div>
 
     <!-- Modal -->
-    <AppModal v-model="showModal" :title="editingTask ? 'Edit Task' : 'Add Task'">
+    <AppModal v-model="showModal" :title="editingTask ? 'Редагувати завдання' : 'Додати завдання'">
       <TaskForm
         :project-id="projectId"
         :task="editingTask ?? undefined"

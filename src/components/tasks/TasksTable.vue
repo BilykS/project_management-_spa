@@ -8,7 +8,7 @@
           :value="uiStore.tasksFilter.assignee"
           class="filter-input"
           type="search"
-          placeholder="Search by assignee…"
+          placeholder="Пошук за виконавцем…"
           @input="uiStore.setTasksFilter({ assignee: ($event.target as HTMLInputElement).value })"
         />
         <select
@@ -16,13 +16,13 @@
           class="filter-select"
           @change="uiStore.setTasksFilter({ status: ($event.target as HTMLSelectElement).value as TaskStatus | '' })"
         >
-          <option value="">All statuses</option>
+          <option value="">Всі статуси</option>
           <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">
             {{ s.label }}
           </option>
         </select>
       </div>
-      <AppButton variant="primary" @click="openCreate">+ Add Task</AppButton>
+      <AppButton variant="primary" @click="openCreate">+ Додати завдання</AppButton>
     </div>
 
     <!-- Loading -->
@@ -32,7 +32,7 @@
 
     <!-- Empty -->
     <div v-else-if="displayedTasks.length === 0" class="state-box state-box--empty">
-      <p>{{ allProjectTasks.length === 0 ? 'No tasks yet. Add your first one!' : 'No tasks match your filters.' }}</p>
+      <p>{{ allProjectTasks.length === 0 ? 'Немає завдань. Додайте перше!' : 'Жодне завдання не відповідає фільтрам.' }}</p>
     </div>
 
     <!-- Table -->
@@ -80,8 +80,8 @@
             <td class="table__td"><AppBadge :status="task.status" /></td>
             <td class="table__td">{{ task.dueDate ? formatDate(task.dueDate) : '—' }}</td>
             <td class="table__td table__td--actions">
-              <button class="btn-icon" title="Edit" @click.stop="openEdit(task)">✏</button>
-              <button class="btn-icon btn-icon--danger" title="Delete" @click.stop="onDelete(task)">✕</button>
+              <button class="btn-icon" title="Редагувати" @click.stop="openEdit(task)">✏</button>
+              <button class="btn-icon btn-icon--danger" title="Видалити" @click.stop="onDelete(task)">✕</button>
             </td>
           </tr>
         </VueDraggable>
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Modal -->
-    <AppModal v-model="showModal" :title="editingTask ? 'Edit Task' : 'Add Task'">
+    <AppModal v-model="showModal" :title="editingTask ? 'Редагувати завдання' : 'Додати завдання'">
       <TaskForm
         :project-id="projectId"
         :task="editingTask ?? undefined"
@@ -129,13 +129,13 @@ const showModal   = ref(false)
 const editingTask = ref<Task | null>(null)
 
 const columns = [
-  { key: 'drag',     label: '',          sortable: false },
-  { key: 'id',       label: 'ID',        sortable: true  },
-  { key: 'title',    label: 'Title',     sortable: true  },
-  { key: 'assignee', label: 'Assignee',  sortable: true  },
-  { key: 'status',   label: 'Status',    sortable: true  },
-  { key: 'dueDate',  label: 'Due Date',  sortable: true  },
-  { key: 'actions',  label: '',          sortable: false },
+  { key: 'drag',     label: '',                   sortable: false },
+  { key: 'id',       label: 'ID',                 sortable: true  },
+  { key: 'title',    label: 'Назва завдання',     sortable: true  },
+  { key: 'assignee', label: 'Виконавець',         sortable: true  },
+  { key: 'status',   label: 'Статус',             sortable: true  },
+  { key: 'dueDate',  label: 'Термін виконання',   sortable: true  },
+  { key: 'actions',  label: '',                   sortable: false },
 ]
 
 // Sort + filter pipeline (same pattern as ProjectsTable)
@@ -179,7 +179,7 @@ function openEdit(task: Task): void {
 }
 
 async function onDelete(task: Task): Promise<void> {
-  if (!confirm(`Delete "${task.title}"?`)) return
+  if (!confirm(`Видалити "${task.title}"?`)) return
   await tasksStore.remove(task.id)
 }
 

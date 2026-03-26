@@ -4,14 +4,14 @@
     <!-- Title -->
     <div class="field" :class="{ 'field--error': errors.title }">
       <label class="field__label" for="task-title">
-        Title <span class="field__required">*</span>
+        Назва <span class="field__required">*</span>
       </label>
       <input
         id="task-title"
         v-model.trim="form.title"
         class="field__input"
         type="text"
-        placeholder="Enter task title"
+        placeholder="Введіть назву завдання"
         autocomplete="off"
         maxlength="120"
         @blur="validateTitle"
@@ -27,9 +27,9 @@
 
     <!-- Assignee -->
     <div class="field">
-      <label class="field__label" for="task-assignee">Assignee</label>
+      <label class="field__label" for="task-assignee">Виконавець</label>
       <select id="task-assignee" v-model="form.assignee" class="field__input field__input--select">
-        <option value="">Unassigned</option>
+        <option value="">Без виконавця</option>
         <option v-for="a in ASSIGNEES" :key="a.id" :value="a.name">{{ a.name }}</option>
       </select>
     </div>
@@ -37,7 +37,7 @@
     <!-- Status -->
     <div class="field" :class="{ 'field--error': errors.status }">
       <label class="field__label" for="task-status">
-        Status <span class="field__required">*</span>
+        Статус <span class="field__required">*</span>
       </label>
       <select
         id="task-status"
@@ -45,7 +45,7 @@
         class="field__input field__input--select"
         @blur="validateStatus"
       >
-        <option value="">Select status</option>
+        <option value="">Оберіть статус</option>
         <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">{{ s.label }}</option>
       </select>
       <span v-if="errors.status" class="field__error">{{ errors.status }}</span>
@@ -54,7 +54,7 @@
     <!-- Due date -->
     <div class="field" :class="{ 'field--error': errors.dueDate }">
       <label class="field__label" for="task-due">
-        Due Date <span class="field__required">*</span>
+        Термін виконання <span class="field__required">*</span>
       </label>
       <input
         id="task-due"
@@ -69,9 +69,9 @@
 
     <!-- Footer -->
     <div class="task-form__footer">
-      <AppButton type="button" variant="ghost" @click="emit('cancel')">Cancel</AppButton>
+      <AppButton type="button" variant="ghost" @click="emit('cancel')">Скасувати</AppButton>
       <AppButton type="submit" variant="primary" :loading="loading">
-        {{ isEdit ? 'Save Changes' : 'Add Task' }}
+        {{ isEdit ? 'Зберегти зміни' : 'Додати завдання' }}
       </AppButton>
     </div>
 
@@ -114,11 +114,11 @@ const loading = ref(false)
 
 function validateTitle(): boolean {
   if (!form.title) {
-    errors.title = 'Title is required.'
+    errors.title = 'Назва обов\'язкова.'
     return false
   }
   if (form.title.length < 3) {
-    errors.title = 'Title must be at least 3 characters.'
+    errors.title = 'Назва має бути не менше 3 символів.'
     return false
   }
   errors.title = ''
@@ -127,7 +127,7 @@ function validateTitle(): boolean {
 
 function validateStatus(): boolean {
   if (!form.status) {
-    errors.status = 'Status is required.'
+    errors.status = 'Статус обов\'язковий.'
     return false
   }
   errors.status = ''
@@ -136,7 +136,7 @@ function validateStatus(): boolean {
 
 function validateDueDate(): boolean {
   if (!form.dueDate) {
-    errors.dueDate = 'Due date is required.'
+    errors.dueDate = 'Термін виконання обов\'язковий.'
     return false
   }
   errors.dueDate = ''
@@ -159,7 +159,7 @@ async function onSubmit(): Promise<void> {
         status:   form.status as TaskStatus,
         dueDate:  form.dueDate,
       })
-      notify.success('Task updated.')
+      notify.success('Завдання оновлено.')
     } else {
       const dto: CreateTaskDto = {
         projectId: props.projectId,
@@ -169,7 +169,7 @@ async function onSubmit(): Promise<void> {
         dueDate:   form.dueDate,
       }
       await tasksStore.create(dto)
-      notify.success('Task created.')
+      notify.success('Завдання успішно створено.')
     }
     emit('saved')
   } catch {

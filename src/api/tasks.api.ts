@@ -1,7 +1,3 @@
-// SRP: тільки HTTP-операції над /tasks.
-// DIP: використовує apiClient, а не axios напряму.
-// DRY: всі URL-рядки завдань централізовані тут.
-
 import apiClient from './client'
 import type { Task, CreateTaskDto, UpdateTaskDto } from '@/types/models'
 

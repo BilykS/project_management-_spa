@@ -3,14 +3,14 @@
     <!-- Name -->
     <div class="field" :class="{ 'field--error': errors.name }">
       <label class="field__label" for="proj-name">
-        Project Name <span class="field__required">*</span>
+        Назва проекту <span class="field__required">*</span>
       </label>
       <input
         id="proj-name"
         v-model.trim="form.name"
         class="field__input"
         type="text"
-        placeholder="Enter project name"
+        placeholder="Введіть назву проекту"
         autocomplete="off"
         @blur="validateName"
       />
@@ -19,12 +19,12 @@
 
     <!-- Description -->
     <div class="field">
-      <label class="field__label" for="proj-desc">Description</label>
+      <label class="field__label" for="proj-desc">Опис</label>
       <textarea
         id="proj-desc"
         v-model.trim="form.description"
         class="field__input field__input--textarea"
-        placeholder="Optional project description"
+        placeholder="Необов'язковий опис проекту"
         rows="3"
       />
     </div>
@@ -32,10 +32,10 @@
     <!-- Footer actions -->
     <div class="project-form__footer">
       <AppButton type="button" variant="ghost" @click="emit('cancel')">
-        Cancel
+        Скасувати
       </AppButton>
       <AppButton type="submit" variant="primary" :loading="loading">
-        Save Project
+        Зберегти проект
       </AppButton>
     </div>
   </form>
@@ -61,7 +61,7 @@ const loading = ref(false)
 
 function validateName(): boolean {
   if (!form.name) {
-    errors.name = 'Project name is required.'
+    errors.name = 'Назва проекту обов\'язкова.'
     return false
   }
   errors.name = ''
@@ -74,7 +74,7 @@ async function onSubmit(): Promise<void> {
   loading.value = true
   try {
     await projectsStore.create({ name: form.name, description: form.description })
-    notify.success('Project created successfully.')
+    notify.success('Проект успішно створено.')
     emit('saved')
   } catch {
     // Глобальний error toast вже показаний через Axios interceptor

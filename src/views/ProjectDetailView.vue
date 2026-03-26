@@ -4,7 +4,7 @@
     <!-- Header -->
     <header class="page-header">
       <div class="page-header__left">
-        <button class="btn-back" @click="router.push('/')">← Back</button>
+        <button class="btn-back" @click="router.push('/')">← Назад</button>
         <div v-if="project" class="page-header__meta">
           <h1 class="page-header__title">{{ project.name }}</h1>
           <AppBadge :status="project.status" />
@@ -17,14 +17,14 @@
           :class="{ 'view-toggle__btn--active': uiStore.viewMode === 'table' }"
           @click="uiStore.setViewMode('table')"
         >
-          Table
+          Таблиця
         </button>
         <button
           class="view-toggle__btn"
           :class="{ 'view-toggle__btn--active': uiStore.viewMode === 'kanban' }"
           @click="uiStore.setViewMode('kanban')"
         >
-          Kanban
+          Канбан
         </button>
       </div>
     </header>

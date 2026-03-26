@@ -1,6 +1,6 @@
 <template>
   <div class="chart-card">
-    <p class="chart-card__title">Tasks by project status</p>
+    <p class="chart-card__title">Завдання за статусом проекту</p>
 
     <div v-if="hasData" class="chart-card__body">
       <div class="chart-card__canvas">
@@ -15,7 +15,7 @@
       </ul>
     </div>
 
-    <p v-else class="chart-card__empty">No tasks yet</p>
+    <p v-else class="chart-card__empty">Завдань поки немає</p>
   </div>
 </template>
 
