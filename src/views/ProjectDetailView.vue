@@ -171,5 +171,8 @@ watch(loading, (done) => {
 .page-content {
   padding: $spacing-6 $spacing-8;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 </style>

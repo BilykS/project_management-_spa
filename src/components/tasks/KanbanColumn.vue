@@ -53,10 +53,12 @@ const model = computed({
   flex: 1;
   min-width: 260px;
   max-width: 360px;
+  min-height: 0;
 
   &__header {
     @include flex-between;
     padding: $spacing-1;
+    flex-shrink: 0;
   }
 
   &__count {
@@ -72,12 +74,15 @@ const model = computed({
   &__list {
     @include flex-column;
     gap: $spacing-2;
+    flex: 1;
     min-height: 80px;
+    overflow-y: auto;
     padding: $spacing-2;
     border-radius: $radius-lg;
     background: $color-bg-secondary;
     border: 2px dashed transparent;
     transition: border-color $transition-fast, background $transition-fast;
+    @include custom-scrollbar;
   }
 }
 </style>

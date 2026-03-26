@@ -115,6 +115,8 @@ function openEdit(task: Task): void {
 .task-kanban {
   @include flex-column;
   gap: $spacing-4;
+  flex: 1;
+  min-height: 0;
 }
 
 .kanban-header {
@@ -128,9 +130,11 @@ function openEdit(task: Task): void {
 
 .kanban-board {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: $spacing-4;
   overflow-x: auto;
+  flex: 1;
+  min-height: 0;
   padding-bottom: $spacing-4;
   @include custom-scrollbar;
 }
