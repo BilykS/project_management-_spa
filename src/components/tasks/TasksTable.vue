@@ -49,14 +49,12 @@
               v-resize-column="resizable.getBinding(col.key)"
               class="table__th"
               :class="{
-                'table__th--sortable': col.sortable,
                 'table__th--sorted': uiStore.tasksSort.key === col.key,
               }"
-              @click="col.sortable && uiStore.setTasksSort(col.key)"
             >
               <span class="th-content">
                 {{ col.label }}
-                <span v-if="col.sortable" class="sort-icon">
+                <span v-if="col.sortable" class="sort-icon" @click.stop="uiStore.setTasksSort(col.key)">
                   <ChevronUp v-if="uiStore.tasksSort.key === col.key && uiStore.tasksSort.direction === 'asc'" :size="12" />
                   <ChevronDown v-else-if="uiStore.tasksSort.key === col.key" :size="12" />
                   <ChevronsUpDown v-else :size="12" />
@@ -301,8 +299,6 @@ onMounted(() => {
     position: relative;
     overflow: hidden;
 
-    &--sortable { cursor: pointer; }
-    &--sortable:hover { background: $color-bg-hover; color: $color-text-primary; }
     &--sorted { color: $color-primary; }
   }
 
@@ -335,7 +331,12 @@ onMounted(() => {
   @include flex-center;
   color: $color-text-muted;
   flex-shrink: 0;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: $radius-sm;
+  transition: background $transition-fast, color $transition-fast;
 
+  &:hover { background: $color-bg-hover; color: $color-text-primary; }
   .table__th--sorted & { color: $color-primary; }
 }
 

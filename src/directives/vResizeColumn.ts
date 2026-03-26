@@ -56,14 +56,25 @@ function applyResizer(
 
   el.appendChild(resizer)
 
+  // Prevent click from bubbling to <th> and accidentally triggering sort
+  resizer.addEventListener('click', (e: MouseEvent) => {
+    e.stopPropagation()
+  })
+
   resizer.addEventListener('mousedown', (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    const startX     = e.clientX
+    // Lock in the actual rendered width so the first pixel of movement is smooth
     const startWidth = el.offsetWidth
+    el.style.width    = `${startWidth}px`
+    el.style.minWidth = `${startWidth}px`
+
+    const startX   = e.clientX
+    let hasDragged = false
 
     const onMouseMove = (moveEvent: MouseEvent) => {
+      hasDragged = true
       const newWidth = Math.max(MIN_WIDTH, startWidth + moveEvent.clientX - startX)
       el.style.width    = `${newWidth}px`
       el.style.minWidth = `${newWidth}px`
@@ -72,7 +83,13 @@ function applyResizer(
     const onMouseUp = (upEvent: MouseEvent) => {
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup',   onMouseUp)
-      onResize(key, Math.max(MIN_WIDTH, startWidth + upEvent.clientX - startX))
+      if (hasDragged) {
+        onResize(key, Math.max(MIN_WIDTH, startWidth + upEvent.clientX - startX))
+      } else {
+        // No drag — revert the locked-in width back to the stored value
+        el.style.width    = `${width}px`
+        el.style.minWidth = `${width}px`
+      }
     }
 
     document.addEventListener('mousemove', onMouseMove)
