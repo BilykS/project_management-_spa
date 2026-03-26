@@ -2,35 +2,25 @@
   <div class="tasks-table">
 
     <!-- Toolbar -->
-    <div class="toolbar">
-      <div class="toolbar__filters">
-        <input
-          :value="uiStore.tasksFilter.assignee"
-          class="filter-input"
-          type="search"
-          placeholder="Пошук за виконавцем…"
-          @input="uiStore.setTasksFilter({ assignee: ($event.target as HTMLInputElement).value })"
-        />
-        <div class="select-wrapper">
-          <select
-            :value="uiStore.tasksFilter.status"
-            class="filter-select"
-            @change="onStatusChange"
-          >
-            <option value="">Всі статуси</option>
-            <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">
-              {{ s.label }}
-            </option>
-          </select>
-          <ChevronDown :size="14" class="select-wrapper__icon" />
-        </div>
-      </div>
+    <TableToolbar
+      :search-value="uiStore.tasksFilter.assignee"
+      :status-value="uiStore.tasksFilter.status"
+      search-placeholder="Пошук за виконавцем…"
+      :status-options="TASK_STATUSES"
+      @update:search-value="uiStore.setTasksFilter({ assignee: $event })"
+      @update:status-value="uiStore.setTasksFilter({ status: $event as TaskStatus | '' })"
+    >
       <AppButton variant="primary" @click="openCreate">+ Додати завдання</AppButton>
-    </div>
+    </TableToolbar>
 
     <!-- Loading -->
     <div v-if="tasksStore.loading" class="state-box">
       <AppSpinner size="lg" />
+    </div>
+
+    <!-- Error -->
+    <div v-else-if="tasksStore.error" class="state-box state-box--error">
+      <p>{{ tasksStore.error }}</p>
     </div>
 
     <!-- Empty -->
@@ -101,8 +91,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useDraggableList } from '@/composables/useDraggableList'
 import { GripVertical, Pencil, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-vue-next'
+import { formatDate } from '@/utils/dateUtils'
+import { TASK_COLUMNS } from '@/config/tableColumns'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useTasksStore } from '@/stores/tasks.store'
 import { useUiStore } from '@/stores/ui.store'
@@ -115,7 +108,8 @@ import AppButton  from '@/components/base/AppButton.vue'
 import AppSpinner from '@/components/base/AppSpinner.vue'
 import AppBadge   from '@/components/base/AppBadge.vue'
 import AppModal   from '@/components/base/AppModal.vue'
-import TaskForm   from './TaskForm.vue'
+import TaskForm      from './TaskForm.vue'
+import TableToolbar  from '@/components/base/TableToolbar.vue'
 
 const props = defineProps<{
   projectId: number
@@ -128,15 +122,7 @@ const resizable  = useResizableColumns('task')
 const showModal   = ref(false)
 const editingTask = ref<Task | null>(null)
 
-const columns = [
-  { key: 'drag',     label: '',                   sortable: false },
-  { key: 'id',       label: 'ID',                 sortable: false },
-  { key: 'title',    label: 'Назва завдання',     sortable: false },
-  { key: 'assignee', label: 'Виконавець',         sortable: false },
-  { key: 'status',   label: 'Статус',             sortable: true  },
-  { key: 'dueDate',  label: 'Термін виконання',   sortable: true  },
-  { key: 'actions',  label: '',                   sortable: false },
-]
+const columns = TASK_COLUMNS
 
 // Sort + filter pipeline (same pattern as ProjectsTable)
 const tasksRef     = computed(() => tasksStore.byProject(props.projectId) as unknown as Record<string, unknown>[])
@@ -157,18 +143,7 @@ const { filtered } = useFilter(sorted, filtersRef, {
 const displayedTasks  = computed(() => filtered.value as unknown as Task[])
 const allProjectTasks = computed(() => tasksStore.byProject(props.projectId))
 
-// VueDraggable requires a mutable ref — keep it synced with displayedTasks
-const localTasks = ref<Task[]>([])
-
-watch(displayedTasks, (val) => {
-  localTasks.value = [...val]
-}, { immediate: true })
-
-function onStatusChange(e: Event): void {
-  const select = e.target as HTMLSelectElement
-  uiStore.setTasksFilter({ status: select.value as TaskStatus | '' })
-  select.blur()
-}
+const localTasks = useDraggableList(displayedTasks)
 
 function onDragEnd(): void {
   tasksStore.reorder(localTasks.value)
@@ -182,12 +157,6 @@ function openCreate(): void {
 function openEdit(task: Task): void {
   editingTask.value = task
   showModal.value   = true
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  })
 }
 
 // fetch only if no tasks for this project yet (persist may already have data)
@@ -204,61 +173,6 @@ onMounted(() => {
   gap: $spacing-4;
 }
 
-.toolbar {
-  @include flex-between;
-  gap: $spacing-4;
-  flex-wrap: wrap;
-
-  &__filters {
-    @include flex-start;
-    gap: $spacing-3;
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-.filter-input,
-.filter-select {
-  padding: $spacing-2 $spacing-3;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  font-size: $font-size-sm;
-  color: $color-text-primary;
-  background: $color-bg-primary;
-  outline: none;
-  transition: border-color $transition-fast, box-shadow $transition-fast;
-
-  &:focus {
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.12);
-  }
-}
-
-.filter-input  { width: 200px; }
-.filter-select {
-  width: 150px;
-  cursor: pointer;
-  appearance: none;
-  padding-right: $spacing-8;
-}
-
-.select-wrapper {
-  position: relative;
-
-  &__icon {
-    position: absolute;
-    right: $spacing-3;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $color-text-muted;
-    pointer-events: none;
-    transition: transform $transition-fast;
-  }
-
-  &:focus-within &__icon {
-    transform: translateY(-50%) rotate(180deg);
-  }
-}
 
 .state-box {
   @include flex-center;
@@ -269,6 +183,11 @@ onMounted(() => {
 
   &--empty p {
     color: $color-text-secondary;
+    font-size: $font-size-sm;
+  }
+
+  &--error p {
+    color: $color-danger;
     font-size: $font-size-sm;
   }
 }

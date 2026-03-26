@@ -111,7 +111,7 @@ export const useTasksStore = defineStore(
 
       const changed = updated.filter((t, i) => t.order !== reorderedTasks[i]?.order)
       await Promise.all(
-        changed.map((t) => tasksApi.update(t.id, { order: t.order })),
+        changed.map(({ id, createdAt, ...dto }) => tasksApi.update(id, dto as UpdateTaskDto)),
       )
     }
 

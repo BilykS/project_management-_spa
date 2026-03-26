@@ -47,8 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useTasksStore } from '@/stores/tasks.store'
+import { useDraggableList } from '@/composables/useDraggableList'
 import type { Task, TaskStatus } from '@/types/models'
 import AppButton  from '@/components/base/AppButton.vue'
 import AppSpinner from '@/components/base/AppSpinner.vue'
@@ -62,21 +63,13 @@ const props = defineProps<{
 
 const tasksStore = useTasksStore()
 
-const localTodo       = ref<Task[]>([])
-const localInProgress = ref<Task[]>([])
-const localDone       = ref<Task[]>([])
-
 const showModal   = ref(false)
 const editingTask = ref<Task | null>(null)
 
-const byStatus = computed(() => tasksStore.byStatus(props.projectId))
-
-// Sync local arrays from store (after store updates or on mount)
-watch(byStatus, (val) => {
-  localTodo.value       = [...val.todo]
-  localInProgress.value = [...val['in-progress']]
-  localDone.value       = [...val.done]
-}, { immediate: true })
+const byStatus        = computed(() => tasksStore.byStatus(props.projectId))
+const localTodo       = useDraggableList(computed(() => byStatus.value.todo))
+const localInProgress = useDraggableList(computed(() => byStatus.value['in-progress']))
+const localDone       = useDraggableList(computed(() => byStatus.value.done))
 
 async function onDrop(): Promise<void> {
   // Snapshot all changes synchronously before any await
@@ -120,7 +113,7 @@ function openEdit(task: Task): void {
 }
 
 .kanban-header {
-  @include flex-between;
+  @include flex-end;
 }
 
 .state-box {

@@ -71,3 +71,14 @@ export const ASSIGNEES: Assignee[] = [
   { id: 4, name: 'David Brown'    },
   { id: 5, name: 'Eva Martinez'   },
 ]
+
+// API types
+import type { AxiosResponse } from 'axios'
+
+export type ApiResponse<T> = AxiosResponse<T>
+
+export interface ApiError {
+  message: string
+  statusCode?: number
+  errors?: Record<string, string[]>
+}

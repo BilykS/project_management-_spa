@@ -1,28 +1,16 @@
 import apiClient from './client'
+import { createApiResource } from './createApiResource'
 import type { Task, CreateTaskDto, UpdateTaskDto } from '@/types/models'
 
 const BASE = '/tasks'
+const base = createApiResource<Task, CreateTaskDto, UpdateTaskDto>(BASE)
 
 export const tasksApi = {
+  ...base,
+
   getByProject(projectId: number): Promise<{ data: Task[] }> {
     return apiClient.get<Task[]>(BASE, {
       params: { projectId, _sort: 'order', _order: 'asc' },
     })
-  },
-
-  getById(id: number): Promise<{ data: Task }> {
-    return apiClient.get<Task>(`${BASE}/${id}`)
-  },
-
-  create(dto: CreateTaskDto): Promise<{ data: Task }> {
-    return apiClient.post<Task>(BASE, dto)
-  },
-
-  update(id: number, dto: UpdateTaskDto): Promise<{ data: Task }> {
-    return apiClient.put<Task>(`${BASE}/${id}`, dto)
-  },
-
-  remove(id: number): Promise<void> {
-    return apiClient.delete(`${BASE}/${id}`)
   },
 }

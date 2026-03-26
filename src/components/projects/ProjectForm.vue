@@ -50,6 +50,7 @@ import AppButton from '@/components/base/AppButton.vue'
 const emit = defineEmits<{
   saved:  []
   cancel: []
+  saving: [value: boolean]
 }>()
 
 const projectsStore = useProjectsStore()
@@ -60,7 +61,7 @@ const errors  = reactive({ name: '' })
 const loading = ref(false)
 
 function validateName(): boolean {
-  if (!form.name) {
+  if (!form.name.trim()) {
     errors.name = 'Назва проекту обов\'язкова.'
     return false
   }
@@ -72,6 +73,7 @@ async function onSubmit(): Promise<void> {
   if (!validateName()) return
 
   loading.value = true
+  emit('saving', true)
   try {
     await projectsStore.create({ name: form.name, description: form.description })
     notify.success('Проект успішно створено.')
@@ -80,6 +82,7 @@ async function onSubmit(): Promise<void> {
     // Глобальний error toast вже показаний через Axios interceptor
   } finally {
     loading.value = false
+    emit('saving', false)
   }
 }
 </script>

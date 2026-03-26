@@ -125,11 +125,11 @@ const errors  = reactive({ title: '', status: '', dueDate: '' })
 const loading = ref(false)
 
 function validateTitle(): boolean {
-  if (!form.title) {
+  if (!form.title.trim()) {
     errors.title = 'Назва обов\'язкова.'
     return false
   }
-  if (form.title.length < 3) {
+  if (form.title.trim().length < 3) {
     errors.title = 'Назва має бути не менше 3 символів.'
     return false
   }

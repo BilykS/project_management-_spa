@@ -16,15 +16,11 @@
 import { Pencil } from 'lucide-vue-next'
 import type { Task } from '@/types/models'
 import AppBadge from '@/components/base/AppBadge.vue'
+import { formatDate } from '@/utils/dateUtils'
 
 const props = defineProps<{ task: Task }>()
 const emit  = defineEmits<{ edit: [task: Task] }>()
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  })
-}
 </script>
 
 <style scoped lang="scss">

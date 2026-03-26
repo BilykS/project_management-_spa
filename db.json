@@ -5,7 +5,7 @@
       "name": "E-Commerce Platform",
       "description": "Full redesign and rebuild of the company's online store with new checkout flow and mobile-first approach.",
       "status": "active",
-      "taskCount": 4,
+      "taskCount": 5,
       "createdAt": "2026-01-10T09:00:00.000Z"
     },
     {
@@ -35,44 +35,40 @@
   ],
   "tasks": [
     {
-      "id": 1,
       "projectId": 1,
       "title": "Design new checkout UI",
       "assignee": "Alice Johnson",
-      "status": "done",
+      "status": "in-progress",
       "dueDate": "2026-02-15",
       "order": 1,
-      "createdAt": "2026-01-11T10:00:00.000Z"
+      "id": 1
     },
     {
-      "id": 2,
       "projectId": 1,
       "title": "Implement product search with filters",
       "assignee": "Bob Smith",
-      "status": "in-progress",
+      "status": "todo",
       "dueDate": "2026-03-30",
-      "order": 2,
-      "createdAt": "2026-01-12T09:00:00.000Z"
+      "order": 4,
+      "id": 2
     },
     {
-      "id": 3,
       "projectId": 1,
       "title": "Integrate Stripe payment gateway",
       "assignee": "Carol Williams",
-      "status": "in-progress",
+      "status": "done",
       "dueDate": "2026-04-10",
-      "order": 3,
-      "createdAt": "2026-01-15T11:00:00.000Z"
+      "order": 5,
+      "id": 3
     },
     {
-      "id": 4,
       "projectId": 1,
       "title": "Write E2E tests for checkout flow",
       "assignee": null,
       "status": "todo",
       "dueDate": "2026-04-25",
-      "order": 4,
-      "createdAt": "2026-01-20T14:00:00.000Z"
+      "order": 2,
+      "id": 4
     },
     {
       "id": 5,
@@ -173,6 +169,15 @@
       "dueDate": "2026-06-15",
       "order": 3,
       "createdAt": "2026-02-20T14:00:00.000Z"
+    },
+    {
+      "projectId": 1,
+      "title": "Write E2E for checkout flow",
+      "assignee": "Bob Smith",
+      "status": "in-progress",
+      "dueDate": "2026-03-28",
+      "order": 3,
+      "id": 15
     }
   ]
 }
