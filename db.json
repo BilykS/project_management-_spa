@@ -43,44 +43,20 @@
   ],
   "tasks": [
     {
-      "id": 1,
-      "projectId": 1,
-      "title": "Design new checkout UI",
-      "assignee": "Alice Johnson",
-      "status": "done",
-      "dueDate": "2026-02-15",
       "order": 1,
-      "createdAt": "2026-01-11T10:00:00.000Z"
+      "id": 1
     },
     {
-      "id": 2,
-      "projectId": 1,
-      "title": "Implement product search with filters",
-      "assignee": "Bob Smith",
-      "status": "in-progress",
-      "dueDate": "2026-03-30",
-      "order": 1,
-      "createdAt": "2026-01-12T09:00:00.000Z"
-    },
-    {
-      "id": 3,
-      "projectId": 1,
-      "title": "Integrate Stripe payment gateway",
-      "assignee": "Carol Williams",
-      "status": "in-progress",
-      "dueDate": "2026-04-10",
       "order": 2,
-      "createdAt": "2026-01-15T11:00:00.000Z"
+      "id": 2
     },
     {
-      "id": 4,
-      "projectId": 1,
-      "title": "Write E2E tests for checkout flow",
-      "assignee": null,
-      "status": "todo",
-      "dueDate": "2026-04-25",
-      "order": 1,
-      "createdAt": "2026-01-20T14:00:00.000Z"
+      "order": 4,
+      "id": 3
+    },
+    {
+      "order": 3,
+      "id": 4
     },
     {
       "id": 5,
@@ -161,9 +137,9 @@
       "projectId": 4,
       "title": "Design dashboard layout and charts",
       "assignee": null,
-      "status": "done",
+      "status": "in-progress",
       "dueDate": "2026-05-20",
-      "order": 1,
+      "order": 2,
       "createdAt": "2026-02-18T10:00:00.000Z"
     },
     {
@@ -183,12 +159,22 @@
     {
       "projectId": 5,
       "title": "Test",
-      "assignee": null,
+      "assignee": "Alice Johnson",
       "status": "in-progress",
       "dueDate": "2026-03-26",
       "order": 1,
       "createdAt": "2026-03-26T07:16:28.762Z",
       "id": 16
+    },
+    {
+      "projectId": 4,
+      "title": "test12",
+      "assignee": null,
+      "status": "in-progress",
+      "dueDate": "2026-03-26",
+      "order": 1,
+      "createdAt": "2026-03-26T09:01:46.090Z",
+      "id": 17
     }
   ]
 }

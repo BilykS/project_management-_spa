@@ -4,7 +4,7 @@
     <!-- Header -->
     <header class="page-header">
       <div class="page-header__left">
-        <button class="btn-back" @click="router.push('/')">← Назад</button>
+        <button class="btn-back" @click="router.push('/')"><ArrowLeft :size="16" />Назад</button>
         <div v-if="project" class="page-header__meta">
           <h1 class="page-header__title">{{ project.name }}</h1>
           <AppBadge :status="project.status" />
@@ -49,6 +49,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProjectsStore } from '@/stores/projects.store'
 import { useTasksStore } from '@/stores/tasks.store'
 import { useUiStore } from '@/stores/ui.store'
+import { ArrowLeft } from 'lucide-vue-next'
 import AppBadge   from '@/components/base/AppBadge.vue'
 import AppSpinner from '@/components/base/AppSpinner.vue'
 import TasksTable from '@/components/tasks/TasksTable.vue'
@@ -117,6 +118,8 @@ watch(loading, (done) => {
 
 .btn-back {
   @include button-reset;
+  @include flex-start;
+  gap: $spacing-1;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $color-text-secondary;

@@ -11,16 +11,19 @@
           placeholder="Пошук за виконавцем…"
           @input="uiStore.setTasksFilter({ assignee: ($event.target as HTMLInputElement).value })"
         />
-        <select
-          :value="uiStore.tasksFilter.status"
-          class="filter-select"
-          @change="uiStore.setTasksFilter({ status: ($event.target as HTMLSelectElement).value as TaskStatus | '' })"
-        >
-          <option value="">Всі статуси</option>
-          <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">
-            {{ s.label }}
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select
+            :value="uiStore.tasksFilter.status"
+            class="filter-select"
+            @change="onStatusChange"
+          >
+            <option value="">Всі статуси</option>
+            <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">
+              {{ s.label }}
+            </option>
+          </select>
+          <ChevronDown :size="14" class="select-wrapper__icon" />
+        </div>
       </div>
       <AppButton variant="primary" @click="openCreate">+ Додати завдання</AppButton>
     </div>
@@ -54,10 +57,9 @@
               <span class="th-content">
                 {{ col.label }}
                 <span v-if="col.sortable" class="sort-icon">
-                  <template v-if="uiStore.tasksSort.key === col.key">
-                    {{ uiStore.tasksSort.direction === 'asc' ? '↑' : '↓' }}
-                  </template>
-                  <template v-else>⇅</template>
+                  <ChevronUp v-if="uiStore.tasksSort.key === col.key && uiStore.tasksSort.direction === 'asc'" :size="12" />
+                  <ChevronDown v-else-if="uiStore.tasksSort.key === col.key" :size="12" />
+                  <ChevronsUpDown v-else :size="12" />
                 </span>
               </span>
             </th>
@@ -72,7 +74,7 @@
         >
           <tr v-for="task in localTasks" :key="task.id" class="table__row">
             <td class="table__td table__td--drag">
-              <span class="drag-handle">⠿</span>
+              <span class="drag-handle"><GripVertical :size="16" /></span>
             </td>
             <td class="table__td">{{ task.id }}</td>
             <td class="table__td table__td--title">{{ task.title }}</td>
@@ -80,8 +82,8 @@
             <td class="table__td"><AppBadge :status="task.status" /></td>
             <td class="table__td">{{ task.dueDate ? formatDate(task.dueDate) : '—' }}</td>
             <td class="table__td table__td--actions">
-              <button class="btn-icon" title="Редагувати" @click.stop="openEdit(task)">✏</button>
-              <button class="btn-icon btn-icon--danger" title="Видалити" @click.stop="onDelete(task)">✕</button>
+              <button class="btn-icon" title="Редагувати" @click.stop="openEdit(task)"><Pencil :size="14" /></button>
+              <button class="btn-icon btn-icon--danger" title="Видалити" @click.stop="onDelete(task)"><Trash2 :size="14" /></button>
             </td>
           </tr>
         </VueDraggable>
@@ -103,6 +105,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+import { GripVertical, Pencil, Trash2, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-vue-next'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useTasksStore } from '@/stores/tasks.store'
 import { useUiStore } from '@/stores/ui.store'
@@ -139,7 +142,7 @@ const columns = [
 ]
 
 // Sort + filter pipeline (same pattern as ProjectsTable)
-const tasksRef     = computed(() => tasksStore.byProject(props.projectId) as Record<string, unknown>[])
+const tasksRef     = computed(() => tasksStore.byProject(props.projectId) as unknown as Record<string, unknown>[])
 const sortStateRef = computed(() => uiStore.tasksSort)
 
 const { sorted } = useSort(tasksRef, sortStateRef)
@@ -163,6 +166,12 @@ const localTasks = ref<Task[]>([])
 watch(displayedTasks, (val) => {
   localTasks.value = [...val]
 }, { immediate: true })
+
+function onStatusChange(e: Event): void {
+  const select = e.target as HTMLSelectElement
+  uiStore.setTasksFilter({ status: select.value as TaskStatus | '' })
+  select.blur()
+}
 
 function onDragEnd(): void {
   tasksStore.reorder(localTasks.value)
@@ -234,7 +243,30 @@ onMounted(() => {
 }
 
 .filter-input  { width: 200px; }
-.filter-select { width: 150px; cursor: pointer; }
+.filter-select {
+  width: 150px;
+  cursor: pointer;
+  appearance: none;
+  padding-right: $spacing-8;
+}
+
+.select-wrapper {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    pointer-events: none;
+    transition: transform $transition-fast;
+  }
+
+  &:focus-within &__icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
 
 .state-box {
   @include flex-center;
@@ -306,7 +338,7 @@ onMounted(() => {
 }
 
 .sort-icon {
-  font-size: $font-size-xs;
+  @include flex-center;
   color: $color-text-muted;
   flex-shrink: 0;
 
@@ -314,9 +346,8 @@ onMounted(() => {
 }
 
 .drag-handle {
+  @include flex-center;
   color: $color-text-muted;
-  font-size: $font-size-lg;
-  line-height: 1;
   cursor: grab;
   user-select: none;
 

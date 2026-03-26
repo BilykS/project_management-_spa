@@ -11,16 +11,19 @@
           placeholder="Пошук за назвою"
           @input="uiStore.setProjectsFilter({ name: ($event.target as HTMLInputElement).value })"
         />
-        <select
-          :value="uiStore.projectsFilter.status"
-          class="filter-select"
-          @change="uiStore.setProjectsFilter({ status: ($event.target as HTMLSelectElement).value as ProjectStatus | '' })"
-        >
-          <option value="">Всі статуси</option>
-          <option v-for="s in PROJECT_STATUSES" :key="s.value" :value="s.value">
-            {{ s.label }}
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select
+            :value="uiStore.projectsFilter.status"
+            class="filter-select"
+            @change="onStatusChange"
+          >
+            <option value="">Всі статуси</option>
+            <option v-for="s in PROJECT_STATUSES" :key="s.value" :value="s.value">
+              {{ s.label }}
+            </option>
+          </select>
+          <ChevronDown :size="14" class="select-wrapper__icon" />
+        </div>
       </div>
       <AppButton variant="primary" @click="showModal = true">
         + Додати проект
@@ -53,10 +56,9 @@
               <span class="th-content">
                 {{ col.label }}
                 <span v-if="col.sortable" class="sort-icon">
-                  <template v-if="uiStore.projectsSort.key === col.key">
-                    {{ uiStore.projectsSort.direction === 'asc' ? '↑' : '↓' }}
-                  </template>
-                  <template v-else>⇅</template>
+                  <ChevronUp v-if="uiStore.projectsSort.key === col.key && uiStore.projectsSort.direction === 'asc'" :size="12" />
+                  <ChevronDown v-else-if="uiStore.projectsSort.key === col.key" :size="12" />
+                  <ChevronsUpDown v-else :size="12" />
                 </span>
               </span>
             </th>
@@ -102,6 +104,7 @@ import { useFilter } from '@/composables/useFilter'
 import { useResizableColumns } from '@/composables/useResizableColumns'
 import { PROJECT_STATUSES } from '@/types/models'
 import type { Project, ProjectStatus } from '@/types/models'
+import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-vue-next'
 import AppButton   from '@/components/base/AppButton.vue'
 import AppSpinner  from '@/components/base/AppSpinner.vue'
 import AppBadge    from '@/components/base/AppBadge.vue'
@@ -139,6 +142,12 @@ const { filtered } = useFilter(sorted, filtersRef, {
 })
 
 const displayedProjects = computed(() => filtered.value as unknown as Project[])
+
+function onStatusChange(e: Event): void {
+  const select = e.target as HTMLSelectElement
+  uiStore.setProjectsFilter({ status: select.value as ProjectStatus | '' })
+  select.blur()
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', {
@@ -191,7 +200,30 @@ onMounted(() => {
 }
 
 .filter-input  { width: 220px; }
-.filter-select { width: 150px; cursor: pointer; }
+.filter-select {
+  width: 150px;
+  cursor: pointer;
+  appearance: none;
+  padding-right: $spacing-8;
+}
+
+.select-wrapper {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    pointer-events: none;
+    transition: transform $transition-fast;
+  }
+
+  &:focus-within &__icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
 
 .state-box {
   @include flex-center;
@@ -269,7 +301,7 @@ onMounted(() => {
 }
 
 .sort-icon {
-  font-size: $font-size-xs;
+  @include flex-center;
   color: $color-text-muted;
   flex-shrink: 0;
 

@@ -28,10 +28,13 @@
     <!-- Assignee -->
     <div class="field">
       <label class="field__label" for="task-assignee">Виконавець</label>
-      <select id="task-assignee" v-model="form.assignee" class="field__input field__input--select">
-        <option value="">Без виконавця</option>
-        <option v-for="a in ASSIGNEES" :key="a.id" :value="a.name">{{ a.name }}</option>
-      </select>
+      <div class="select-wrapper">
+        <select id="task-assignee" v-model="form.assignee" class="field__input field__input--select" @change="($event.target as HTMLSelectElement).blur()">
+          <option value="">Без виконавця</option>
+          <option v-for="a in ASSIGNEES" :key="a.id" :value="a.name">{{ a.name }}</option>
+        </select>
+        <ChevronDown :size="14" class="select-wrapper__icon" />
+      </div>
     </div>
 
     <!-- Status -->
@@ -39,15 +42,19 @@
       <label class="field__label" for="task-status">
         Статус <span class="field__required">*</span>
       </label>
-      <select
-        id="task-status"
-        v-model="form.status"
-        class="field__input field__input--select"
-        @blur="validateStatus"
-      >
-        <option value="">Оберіть статус</option>
-        <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">{{ s.label }}</option>
-      </select>
+      <div class="select-wrapper">
+        <select
+          id="task-status"
+          v-model="form.status"
+          class="field__input field__input--select"
+          @change="($event.target as HTMLSelectElement).blur()"
+          @blur="validateStatus"
+        >
+          <option value="">Оберіть статус</option>
+          <option v-for="s in TASK_STATUSES" :key="s.value" :value="s.value">{{ s.label }}</option>
+        </select>
+        <ChevronDown :size="14" class="select-wrapper__icon" />
+      </div>
       <span v-if="errors.status" class="field__error">{{ errors.status }}</span>
     </div>
 
@@ -56,15 +63,18 @@
       <label class="field__label" for="task-due">
         Термін виконання <span class="field__required">*</span>
       </label>
-      <input
-        id="task-due"
-        v-model="form.dueDate"
-        class="field__input field__input--date"
-        type="date"
-        :min="today"
-        @click="($event.target as HTMLInputElement).showPicker?.()"
-        @blur="validateDueDate"
-      />
+      <div class="date-wrapper">
+        <input
+          id="task-due"
+          v-model="form.dueDate"
+          class="field__input field__input--date"
+          type="date"
+          :min="today"
+          @click="($event.target as HTMLInputElement).showPicker?.()"
+          @blur="validateDueDate"
+        />
+        <Calendar :size="15" class="date-wrapper__icon" />
+      </div>
       <span v-if="errors.dueDate" class="field__error">{{ errors.dueDate }}</span>
     </div>
 
@@ -81,6 +91,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
+import { Calendar, ChevronDown } from 'lucide-vue-next'
 import { useTasksStore } from '@/stores/tasks.store'
 import { useNotification } from '@/composables/useNotification'
 import { ASSIGNEES, TASK_STATUSES } from '@/types/models'
@@ -226,8 +237,23 @@ async function onSubmit(): Promise<void> {
       box-shadow: 0 0 0 3px rgba($color-primary, 0.12);
     }
 
-    &--select { cursor: pointer; appearance: auto; }
-    &--date   { cursor: pointer; }
+    &--select {
+      cursor: pointer;
+      appearance: none;
+      padding-right: $spacing-8;
+    }
+
+    &--date {
+      cursor: pointer;
+      padding-right: $spacing-8;
+
+      &::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        padding: 0;
+      }
+    }
   }
 
   &--error &__input {
@@ -251,6 +277,37 @@ async function onSubmit(): Promise<void> {
     margin-left: auto;
 
     &--warn { color: $color-warning; }
+  }
+}
+
+.select-wrapper {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    pointer-events: none;
+    transition: transform $transition-fast;
+  }
+
+  &:focus-within &__icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+.date-wrapper {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    pointer-events: none;
   }
 }
 </style>

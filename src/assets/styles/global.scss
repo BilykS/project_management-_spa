@@ -34,6 +34,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
   color: $color-text-primary;
+  letter-spacing: -0.015em;
 }
 
 a {

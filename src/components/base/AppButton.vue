@@ -27,10 +27,11 @@ defineOptions({ inheritAttrs: true })
 .btn {
   @include flex-center;
   gap: $spacing-2;
-  padding: $spacing-2 $spacing-4;
+  padding: 0.5rem $spacing-4;
   border-radius: $radius-md;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
+  letter-spacing: -0.01em;
   line-height: $line-height-normal;
   transition: background $transition-fast, color $transition-fast,
     border-color $transition-fast, box-shadow $transition-fast;
@@ -39,7 +40,7 @@ defineOptions({ inheritAttrs: true })
 
   &:disabled,
   &--loading {
-    opacity: 0.55;
+    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -49,9 +50,11 @@ defineOptions({ inheritAttrs: true })
     background: $color-primary;
     color: $color-text-inverse;
     border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
     &:hover:not(:disabled) {
       background: $color-primary-hover;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     &:focus-visible {
@@ -79,9 +82,11 @@ defineOptions({ inheritAttrs: true })
     background: $color-danger;
     color: $color-text-inverse;
     border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(239, 68, 68, 0.25);
 
     &:hover:not(:disabled) {
       background: $color-danger-hover;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
     }
 
     &:focus-visible {

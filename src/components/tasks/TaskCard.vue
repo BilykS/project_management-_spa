@@ -2,7 +2,7 @@
   <div class="task-card">
     <div class="task-card__header">
       <p class="task-card__title">{{ task.title }}</p>
-      <button class="task-card__edit" @click.stop="emit('edit', task)">✏</button>
+      <button class="task-card__edit" @click.stop="emit('edit', task)"><Pencil :size="13" /></button>
     </div>
     <div class="task-card__footer">
       <span v-if="task.assignee" class="task-card__assignee">{{ task.assignee }}</span>
@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import { Pencil } from 'lucide-vue-next'
 import type { Task } from '@/types/models'
 import AppBadge from '@/components/base/AppBadge.vue'
 
@@ -53,11 +54,10 @@ function formatDate(iso: string): string {
   &__edit {
     @include button-reset;
     @include flex-center;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: $radius-sm;
     color: $color-text-muted;
-    font-size: $font-size-xs;
     flex-shrink: 0;
     transition: background $transition-fast, color $transition-fast;
 
