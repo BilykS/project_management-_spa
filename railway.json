@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "buildCommand": "npm install"
+  },
+  "deploy": {
+    "startCommand": "json-server --watch db.json --port $PORT"
+  }
+}
