@@ -84,7 +84,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     ? await readBody(req)
     : {}
 
-  // ── /api/projects ──────────────────────────────────────────────────────────
+  // /api/projects 
   if (resource === 'projects') {
     if (id === null) {
       if (req.method === 'GET') return send(res, store.projects)
@@ -103,7 +103,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     }
   }
 
-  // ── /api/tasks ─────────────────────────────────────────────────────────────
+  // /api/tasks
   if (resource === 'tasks') {
     if (id === null) {
       if (req.method === 'GET') {
