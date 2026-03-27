@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { tasksApi } from '@/api/tasks.api'
 import { useProjectsStore } from './projects.store'
-import type { Task, CreateTaskDto, UpdateTaskDto, TaskStatus } from '@/types/models'
+import type { Task, CreateTaskDto, UpdateTaskDto, TaskStatus, TasksFilterParams } from '@/types/models'
 
 export const useTasksStore = defineStore(
   'tasks',
@@ -37,11 +37,11 @@ export const useTasksStore = defineStore(
     function setLoading(value: boolean)    { loading.value = value }
     function setError(msg: string | null)  { error.value   = msg   }
 
-    async function fetchByProject(projectId: number): Promise<void> {
+    async function fetchByProject(projectId: number, params?: TasksFilterParams): Promise<void> {
       setLoading(true)
       setError(null)
       try {
-        const { data } = await tasksApi.getByProject(projectId)
+        const { data } = await tasksApi.getByProject(projectId, params)
         tasks.value = [
           ...tasks.value.filter((t) => t.projectId !== projectId),
           ...data,

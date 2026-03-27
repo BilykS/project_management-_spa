@@ -83,12 +83,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProjectsStore } from '@/stores/projects.store'
 import { useUiStore } from '@/stores/ui.store'
 import { useSort } from '@/composables/useSort'
-import { useFilter } from '@/composables/useFilter'
+import { useDebounce } from '@/composables/useDebounce'
 import { useResizableColumns } from '@/composables/useResizableColumns'
 import { PROJECT_STATUSES } from '@/types/models'
 import type { Project, ProjectStatus } from '@/types/models'
@@ -112,26 +112,26 @@ const formSaving  = ref(false)
 
 const columns = PROJECT_COLUMNS
 
-const projectsRef = computed(() => projectsStore.projects as Record<string, unknown>[])
+const projectsRef  = computed(() => projectsStore.projects as Record<string, unknown>[])
 const sortStateRef = computed(() => uiStore.projectsSort)
+const { sorted }   = useSort(projectsRef, sortStateRef)
+const displayedProjects = computed(() => sorted.value as unknown as Project[])
 
-const { sorted } = useSort(projectsRef, sortStateRef)
+function fetchWithFilters(): void {
+  const { name, status } = uiStore.projectsFilter
+  projectsStore.fetchAll({
+    name:   name   || undefined,
+    status: status || undefined,
+  })
+}
 
-const filtersRef = computed<Record<string, string>>(() => ({
-  name:   uiStore.projectsFilter.name,
-  status: uiStore.projectsFilter.status,
-}))
+const debouncedFetch = useDebounce(fetchWithFilters)
 
-const { filtered } = useFilter(sorted, filtersRef, {
-  name:   'text',
-  status: 'exact',
-})
-
-const displayedProjects = computed(() => filtered.value as unknown as Project[])
-
+watch(() => uiStore.projectsFilter.name,   () => debouncedFetch())
+watch(() => uiStore.projectsFilter.status, () => fetchWithFilters())
 
 onMounted(() => {
-  projectsStore.fetchAll()
+  fetchWithFilters()
 })
 </script>
 

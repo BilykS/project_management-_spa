@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { projectsApi } from '@/api/projects.api'
-import type { Project, CreateProjectDto, UpdateProjectDto } from '@/types/models'
+import type { Project, CreateProjectDto, UpdateProjectDto, ProjectsFilterParams } from '@/types/models'
 
 export const useProjectsStore = defineStore(
   'projects',
@@ -28,11 +28,11 @@ export const useProjectsStore = defineStore(
     function setLoading(value: boolean)     { loading.value = value }
     function setError(msg: string | null)   { error.value   = msg   }
 
-    async function fetchAll(): Promise<void> {
+    async function fetchAll(params?: ProjectsFilterParams): Promise<void> {
       setLoading(true)
       setError(null)
       try {
-        const { data } = await projectsApi.getAll()
+        const { data } = await projectsApi.getAll(params)
         projects.value = data
       } catch {
         setError('Failed to load projects.')

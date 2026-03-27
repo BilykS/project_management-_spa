@@ -84,10 +84,17 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     ? await readBody(req)
     : {}
 
-  // /api/projects 
+  // /api/projects
   if (resource === 'projects') {
     if (id === null) {
-      if (req.method === 'GET') return send(res, store.projects)
+      if (req.method === 'GET') {
+        const nameLike = url.searchParams.get('name_like')
+        const status   = url.searchParams.get('status')
+        let result = store.projects
+        if (nameLike) result = result.filter(p => new RegExp(nameLike, 'i').test(p.name))
+        if (status)   result = result.filter(p => p.status === status)
+        return send(res, result)
+      }
       if (req.method === 'POST') {
         const item = { ...body, id: nextId(store.projects) } as Project
         store.projects.push(item)
@@ -107,10 +114,14 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   if (resource === 'tasks') {
     if (id === null) {
       if (req.method === 'GET') {
-        const pid    = url.searchParams.get('projectId')
-        const result = pid
+        const pid          = url.searchParams.get('projectId')
+        const assigneeLike = url.searchParams.get('assignee_like')
+        const status       = url.searchParams.get('status')
+        let result = pid
           ? store.tasks.filter(t => t.projectId === parseInt(pid, 10))
           : store.tasks
+        if (assigneeLike) result = result.filter(t => t.assignee && new RegExp(assigneeLike, 'i').test(t.assignee))
+        if (status)       result = result.filter(t => t.status === status)
         return send(res, result)
       }
       if (req.method === 'POST') {

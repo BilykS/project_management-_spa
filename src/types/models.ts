@@ -72,6 +72,17 @@ export const ASSIGNEES: Assignee[] = [
   { id: 5, name: 'Eva Martinez'   },
 ]
 
+// API filter params
+export interface ProjectsFilterParams {
+  name?: string
+  status?: string
+}
+
+export interface TasksFilterParams {
+  assignee?: string
+  status?: string
+}
+
 // API types
 import type { AxiosResponse } from 'axios'
 

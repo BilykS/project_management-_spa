@@ -31,6 +31,14 @@
       "status": "on-hold",
       "taskCount": 3,
       "createdAt": "2026-02-14T14:00:00.000Z"
+    },
+    {
+      "name": "Sass v1.0",
+      "description": "",
+      "status": "active",
+      "taskCount": 2,
+      "createdAt": "2026-03-27T08:00:51.147Z",
+      "id": 5
     }
   ],
   "tasks": [
@@ -178,6 +186,25 @@
       "dueDate": "2026-03-28",
       "order": 3,
       "id": 15
+    },
+    {
+      "projectId": 5,
+      "title": "Write E2E for checkout flow",
+      "assignee": null,
+      "status": "todo",
+      "dueDate": "2026-03-29",
+      "order": 2,
+      "id": 16
+    },
+    {
+      "projectId": 5,
+      "title": "Write checkout flow",
+      "assignee": "David Brown",
+      "status": "in-progress",
+      "dueDate": "2026-03-29",
+      "order": 1,
+      "createdAt": "2026-03-27T08:01:52.899Z",
+      "id": 17
     }
   ]
 }

@@ -91,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useDraggableList } from '@/composables/useDraggableList'
 import { GripVertical, Pencil, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-vue-next'
 import { formatDate } from '@/utils/dateUtils'
@@ -100,7 +100,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 import { useTasksStore } from '@/stores/tasks.store'
 import { useUiStore } from '@/stores/ui.store'
 import { useSort } from '@/composables/useSort'
-import { useFilter } from '@/composables/useFilter'
+import { useDebounce } from '@/composables/useDebounce'
 import { useResizableColumns } from '@/composables/useResizableColumns'
 import { TASK_STATUSES } from '@/types/models'
 import type { Task, TaskStatus } from '@/types/models'
@@ -124,26 +124,26 @@ const editingTask = ref<Task | null>(null)
 
 const columns = TASK_COLUMNS
 
-// Sort + filter pipeline (same pattern as ProjectsTable)
 const tasksRef     = computed(() => tasksStore.byProject(props.projectId) as unknown as Record<string, unknown>[])
 const sortStateRef = computed(() => uiStore.tasksSort)
+const { sorted }   = useSort(tasksRef, sortStateRef)
 
-const { sorted } = useSort(tasksRef, sortStateRef)
-
-const filtersRef = computed<Record<string, string>>(() => ({
-  assignee: uiStore.tasksFilter.assignee,
-  status:   uiStore.tasksFilter.status,
-}))
-
-const { filtered } = useFilter(sorted, filtersRef, {
-  assignee: 'text',
-  status:   'exact',
-})
-
-const displayedTasks  = computed(() => filtered.value as unknown as Task[])
+const displayedTasks  = computed(() => sorted.value as unknown as Task[])
 const allProjectTasks = computed(() => tasksStore.byProject(props.projectId))
+const localTasks      = useDraggableList(displayedTasks)
 
-const localTasks = useDraggableList(displayedTasks)
+function fetchWithFilters(): void {
+  const { assignee, status } = uiStore.tasksFilter
+  tasksStore.fetchByProject(props.projectId, {
+    assignee: assignee || undefined,
+    status:   status   || undefined,
+  })
+}
+
+const debouncedFetch = useDebounce(fetchWithFilters)
+
+watch(() => uiStore.tasksFilter.assignee, () => debouncedFetch())
+watch(() => uiStore.tasksFilter.status,   () => fetchWithFilters())
 
 function onDragEnd(): void {
   tasksStore.reorder(localTasks.value)
@@ -159,11 +159,8 @@ function openEdit(task: Task): void {
   showModal.value   = true
 }
 
-// fetch only if no tasks for this project yet (persist may already have data)
 onMounted(() => {
-  if (tasksStore.byProject(props.projectId).length === 0) {
-    tasksStore.fetchByProject(props.projectId)
-  }
+  fetchWithFilters()
 })
 </script>
 
